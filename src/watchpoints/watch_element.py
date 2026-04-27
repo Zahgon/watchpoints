@@ -43,89 +43,23 @@ class WatchElement:
 
     @property
     def track(self):
-        return self._track
+        pass
 
     @track.setter
     def track(self, val):
-        if type(val) is list:
-            for elem in val:
-                if elem not in ("variable", "object"):
-                    raise ValueError("track only takes list with 'variable' or 'object'")
-            if len(val) == 0:
-                raise ValueError("You need to track something!")
-            self._track = val[:]
-        elif type(val) is str:
-            if val not in ("variable", "object"):
-                raise ValueError("track only takes list with 'variable' or 'object'")
-            self._track = [val]
-        else:
-            raise TypeError("track only takes list with 'variable' or 'object'")
+        pass
 
     def changed(self, frame):
         """
         :return (changed, exist):
         """
-        if "variable" in self.track:
-            if frame is self.frame and self.localvar is not None:
-                if self.localvar in frame.f_locals:
-                    if self.obj_changed(frame.f_locals[self.localvar]):
-                        self.obj = frame.f_locals[self.localvar]
-                        return True, True
-                else:
-                    return True, False
-
-            if self.parent is not None and self.subscr is not None:
-                try:
-                    if self.obj_changed(self.parent[self.subscr]):
-                        self.obj = self.parent[self.subscr]
-                        return True, True
-                except (IndexError, KeyError):
-                    return True, False
-            elif self.parent is not None and self.attr is not None:
-                try:
-                    if self.obj_changed(getattr(self.parent, self.attr)):
-                        self.obj = getattr(self.parent, self.attr)
-                        return True, True
-                except AttributeError:
-                    return True, False
-        if "object" in self.track:
-            if not isinstance(self.obj, type(self.prev_obj)):
-                raise Exception("object type should not change")  # pragma: no cover
-            else:
-                return self.obj_changed(self.prev_obj), True
-
-        return False, True
+        pass
 
     def obj_changed(self, other):
-        if not isinstance(self.obj, type(other)):
-            return True
-        elif pd is not None and isinstance(self.obj, pd.DataFrame):
-            return not self.obj.equals(other)
-        elif self.cmp:
-            return self.cmp(self.obj, other)
-        elif self.obj.__class__.__module__ == "builtins":
-            return self.obj != other
-        else:
-            guess = self.obj.__eq__(other)
-            if guess is NotImplemented:
-                if self.deepcopy:
-                    raise NotImplementedError(
-                        f"It's impossible to compare deepcopied customize objects."
-                        f"You need to define __eq__ method for {self.obj.__class__}")
-                return self.obj.__dict__ != other.__dict__
-            else:
-                return not guess
+        pass
 
     def update(self):
-        if pd is not None and isinstance(self.obj, pd.DataFrame):
-            self.prev_obj = self.obj.copy(True)
-        elif self.copy:
-            self.prev_obj = self.copy(self.obj)
-        elif self.deepcopy:
-            self.prev_obj = copy.deepcopy(self.obj)
-        else:
-            self.prev_obj = copy.copy(self.obj)
-        self.prev_obj_repr = self.obj.__repr__()
+        pass
 
     def same(self, other):
         if type(other) is str:

@@ -52,18 +52,7 @@ class Watch:
             del frame
 
     def start_trace(self, frame):
-        if not self.enable:
-            self.enable = True
-            self.tracefunc_stack.append(sys.gettrace())
-            self._prev_funcname = frame.f_code.co_name
-            self._prev_filename = frame.f_code.co_filename
-            self._prev_lineno = frame.f_lineno
-            while frame:
-                frame.f_trace = self.tracefunc
-                frame = frame.f_back
-
-            sys.settrace(self.tracefunc)
-            threading.settrace(self.tracefunc)
+        pass
 
     def stop_trace(self, frame):
         if self.enable:
@@ -90,74 +79,19 @@ class Watch:
             del frame
 
     def config(self, **kwargs):
-        if "callback" in kwargs:
-            self._callback = kwargs["callback"]
-
-        if "pdb" in kwargs:
-            self.pdb = pdb.Pdb()
-            self.pdb.reset()
-
-        if "file" in kwargs:
-            self.file = kwargs["file"]
-
-        if "stack_limit" in kwargs:
-            self.stack_limit = kwargs["stack_limit"]
-
-        if "custom_printer" in kwargs:
-            self.custom_printer = kwargs["custom_printer"]
+        pass
 
     def restore(self):
-        self._callback = self._default_callback
-        self.pdb = None
-        self.file = sys.stderr
-        self.pdb_enable = False
-        self.stack_limit = 5
-        self.custom_printer = None
+        pass
 
     def install(self, func="watch"):
-        import builtins
-        setattr(builtins, func, self)
+        pass
 
     def uninstall(self, func="watch"):
-        import builtins
-        if hasattr(builtins, func):
-            delattr(builtins, func)
+        pass
 
     def tracefunc(self, frame, event, arg):
-        with self.tracefunc_lock:
-            dirty = False
-            for elem in self.watch_list:
-                changed, exist = elem.changed(frame)
-                if changed:
-                    if not elem.when or elem.when(elem.obj):
-                        if self.pdb:
-                            self.pdb_enable = True
-                        if elem._callback:
-                            elem._callback(frame, elem, (self._prev_funcname, self._prev_filename, self._prev_lineno))
-                        else:
-                            self._callback(frame, elem, (self._prev_funcname, self._prev_filename, self._prev_lineno))
-                    elem.update()
-                if not exist:
-                    elem.exist = False
-                    dirty = True
-            if dirty:
-                self.watch_list = [elem for elem in self.watch_list if elem.exist]
-
-            self._prev_funcname = frame.f_code.co_name
-            self._prev_filename = frame.f_code.co_filename
-            self._prev_lineno = frame.f_lineno
-
-            if self.pdb_enable:
-                try:
-                    self.pdb.trace_dispatch(frame, event, arg)
-                except BdbQuit:
-                    self.pdb_enable = False
-                    self.pdb.reset()
-                    # BdbQuit will clear sys.settrace()
-                    # We need to get it back
-                    sys.settrace(self.tracefunc)
-
-        return self.tracefunc
+        pass
 
     def _default_callback(self, frame, elem, exec_info):
-        elem.watch_print(frame, elem, exec_info)
+        pass

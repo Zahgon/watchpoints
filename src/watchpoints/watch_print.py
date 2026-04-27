@@ -45,49 +45,14 @@ class WatchPrint:
         p("")
 
     def _file_string(self, exec_info):
-        return f"  {exec_info[0]} ({exec_info[1]}:{exec_info[2]}):\n" + \
-            self.getsourceline(exec_info)
+        pass
 
     def _frame_string(self, frame):
-        return self._file_string((frame.f_code.co_name, frame.f_code.co_filename, frame.f_lineno))
+        pass
 
     def getsourceline(self, exec_info):
-        try:
-            filename = exec_info[1]
-            if os.path.exists(filename):
-                with open(exec_info[1], encoding="utf-8") as f:
-                    lines = f.readlines()
-                    return f">   {lines[exec_info[2] - 1].strip()}"
-            else:
-                # We may have an egg file, we try to figure out if we have a zipfile
-                # in the path and unzip that
-                potential_egg = filename
-                f_paths = []
-                while os.path.dirname(potential_egg) != potential_egg:
-                    potential_egg, f_path = os.path.split(potential_egg)
-                    f_paths.append(f_path)
-                    if zipfile.is_zipfile(potential_egg):
-                        with zipfile.ZipFile(potential_egg) as zf:
-                            with zf.open("/".join(reversed(f_paths))) as f:
-                                lines = f.readlines()
-                                return f">   {lines[exec_info[2] - 1].decode('utf-8').strip()}"
-            return "unable to locate the source"
-        except (FileNotFoundError, PermissionError):  # pragma: no cover
-            return "unable to locate the source"
+        pass
 
     def printer(self, obj):
 
-        def do_print(obj, stream):
-            if self.custom_printer is not None:
-                self.custom_printer(obj)
-            else:
-                if type(obj) is str:
-                    print(obj, file=stream)
-                else:
-                    print(objstr(obj), file=stream)
-
-        if isinstance(self.file, str):
-            with open(self.file, "a") as f:
-                do_print(obj, f)
-        else:
-            do_print(obj, self.file)
+        pass
